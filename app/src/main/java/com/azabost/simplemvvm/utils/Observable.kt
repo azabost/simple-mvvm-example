@@ -28,7 +28,7 @@ fun <T> Observable<T>.showErrorMessages(
     return compose {
         it.doOnError {
             if (it is HttpException) {
-                errorsSubject.onNext(it.code())
+                errorsSubject.onNext(HttpErrors.httpExceptionToErrorMessage(it))
             } else {
                 errorsSubject.onNext(default)
             }
