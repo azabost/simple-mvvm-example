@@ -79,6 +79,8 @@ class MainViewModelTests {
         gitHubClient.error = HttpErrors.getHttpException(404)
 
         vm.getRepo("any", "thing")
+        testScheduler.triggerActions()
+
         errorObserver.assertValue(HttpErrors.DEFAULT_HTTP_ERROR_MESSAGE)
     }
 
@@ -87,6 +89,8 @@ class MainViewModelTests {
         gitHubClient.error = Exception("Failed")
 
         vm.getRepo("any", "thing")
+        testScheduler.triggerActions()
+
         errorObserver.assertValue(R.string.default_error_message)
     }
 
