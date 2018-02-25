@@ -18,15 +18,16 @@ class DataFragment : BaseFragment() {
 
     private lateinit var vm: DataVM
 
-    override fun onCreateView(inflater: LayoutInflater?,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? =
-            inflater?.inflate(R.layout.fragment_data, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? = inflater.inflate(R.layout.fragment_data, container, false)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        vm = ViewModelProviders.of(activity, vmFactory).get(MainViewModel::class.java)
+        vm = ViewModelProviders.of(activity!!, vmFactory).get(MainViewModel::class.java)
 
         data.text = vm.data.id.toString()
     }

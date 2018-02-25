@@ -18,15 +18,16 @@ class LoadingFragment : BaseFragment() {
 
     private lateinit var vm: LoadingVM
 
-    override fun onCreateView(inflater: LayoutInflater?,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? =
-            inflater?.inflate(R.layout.fragment_loading, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? = inflater.inflate(R.layout.fragment_loading, container, false)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        vm = ViewModelProviders.of(activity, vmFactory).get(MainViewModel::class.java)
+        vm = ViewModelProviders.of(activity!!, vmFactory).get(MainViewModel::class.java)
 
         getRepoButton.setOnClickListener {
             vm.getRepo("azabost", "android-sdk")
