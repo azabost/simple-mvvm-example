@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">SimpleMvvm</string>
+    <string name="app_name">SimpleMvvmRoom</string>
     <string name="default_error_message">Your favorite meaningless error message</string>
 </resources>
