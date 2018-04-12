@@ -59,9 +59,13 @@ dependencies {
 
     // Android Architecture Components
     final ARCH_COMP_VERSION = "1.1.1"
+    final ROOM_VERSION = "1.1.0-beta2"
     implementation "android.arch.lifecycle:runtime:$ARCH_COMP_VERSION"
     implementation "android.arch.lifecycle:extensions:$ARCH_COMP_VERSION"
     kapt "android.arch.lifecycle:compiler:$ARCH_COMP_VERSION"
+    implementation "android.arch.persistence.room:runtime:$ROOM_VERSION"
+    implementation "android.arch.persistence.room:rxjava2:$ROOM_VERSION"
+    kapt "android.arch.persistence.room:compiler:$ROOM_VERSION"
 
     // Multidex
     implementation 'com.android.support:multidex:1.0.3'
@@ -75,6 +79,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:2.18.0'
     testImplementation 'junit:junit:4.12'
     testImplementation 'com.github.bright:shouldko:0.1.5'
+    testImplementation "android.arch.persistence.room:testing:$ROOM_VERSION"
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }
