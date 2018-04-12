@@ -13,7 +13,7 @@ import javax.inject.Singleton
 class NetworkModule {
     @Provides
     @Singleton
-    fun providesGitHubClient(gson: Gson): GitHubClient {
+    fun providesGitHubClient(gson: Gson): ApiClient {
         val retrofit = Retrofit.Builder()
                 .baseUrl(GitHubService.BASE_URL)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())

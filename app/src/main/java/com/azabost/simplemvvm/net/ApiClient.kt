@@ -4,8 +4,8 @@ import com.azabost.simplemvvm.net.response.RepoResponse
 import io.reactivex.Observable
 import javax.inject.Inject
 
-class ApiClient @Inject constructor(private val gitHubService: GitHubService) : GitHubClient {
-    override fun getRepo(owner: String, repo: String): Observable<RepoResponse> {
+class ApiClient @Inject constructor(private val gitHubService: GitHubService) {
+    fun getRepo(owner: String, repo: String): Observable<RepoResponse> {
         return gitHubService.getRepo(owner, repo)
     }
 }

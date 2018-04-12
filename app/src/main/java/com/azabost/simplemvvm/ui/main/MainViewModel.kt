@@ -2,7 +2,7 @@ package com.azabost.simplemvvm.ui.main
 
 import android.arch.lifecycle.ViewModel
 import com.azabost.simplemvvm.R
-import com.azabost.simplemvvm.net.GitHubClient
+import com.azabost.simplemvvm.net.ApiClient
 import com.azabost.simplemvvm.net.response.RepoResponse
 import com.azabost.simplemvvm.utils.logger
 import com.azabost.simplemvvm.utils.showErrorMessages
@@ -27,7 +27,7 @@ interface DataVM {
 }
 
 class MainViewModel @Inject constructor(
-        private val gitHubClient: GitHubClient
+        private val gitHubClient: ApiClient
 ) : ViewModel(), MainVM, LoadingVM, DataVM {
 
     override val progress: PublishSubject<Boolean> = PublishSubject.create()
