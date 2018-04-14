@@ -8,7 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.azabost.simplemvvm.R
 import com.azabost.simplemvvm.ui.BaseFragment
-import kotlinx.android.synthetic.main.fragment_data.*
+import com.azabost.simplemvvm.utils.logger
+import com.trello.rxlifecycle2.android.lifecycle.kotlin.bindToLifecycle
 import javax.inject.Inject
 
 class DataFragment : BaseFragment() {
@@ -17,6 +18,8 @@ class DataFragment : BaseFragment() {
     lateinit var vmFactory: ViewModelProvider.Factory
 
     private lateinit var vm: DataVM
+
+    private val log = logger
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,6 +32,10 @@ class DataFragment : BaseFragment() {
 
         vm = ViewModelProviders.of(activity!!, vmFactory).get(MainViewModel::class.java)
 
-        data.text = vm.data.id.toString()
+        vm.data.bindToLifecycle(this).subscribe({
+            it.forEach {
+                log.info(it.toString())
+            }
+        })
     }
 }

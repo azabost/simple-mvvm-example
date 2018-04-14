@@ -32,8 +32,10 @@ class MainActivity : BaseActivity() {
 
         vm.progress.bindToLifecycle(this).observeOnMainThread().subscribe({
             if (it) {
+                log.debug("Showing progress")
                 showProgress()
             } else {
+                log.debug("Hiding progress")
                 hideProgress()
             }
         }, {
