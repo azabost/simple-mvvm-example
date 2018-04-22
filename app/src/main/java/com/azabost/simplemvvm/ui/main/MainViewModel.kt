@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel
 import com.azabost.simplemvvm.R
 import com.azabost.simplemvvm.net.ApiClient
 import com.azabost.simplemvvm.persistence.GitHubDatabase
+import com.azabost.simplemvvm.persistence.dao.CommitWithAuthor
 import com.azabost.simplemvvm.persistence.entities.CommitInfoEntity
 import com.azabost.simplemvvm.utils.ProgressHandler
 import com.azabost.simplemvvm.utils.logger
@@ -25,7 +26,7 @@ interface LoadingVM {
 }
 
 interface DataVM {
-    val data: Observable<List<CommitInfoEntity>>
+    val data: Observable<List<CommitWithAuthor>>
 }
 
 class MainViewModel @Inject constructor(
@@ -36,8 +37,8 @@ class MainViewModel @Inject constructor(
     override val progress: PublishSubject<Boolean> = PublishSubject.create()
     override val errors: PublishSubject<Int> = PublishSubject.create()
     override val showData: PublishSubject<Unit> = PublishSubject.create()
-    override var data: Observable<List<CommitInfoEntity>> =
-        gitHubDatabase.commitInfoDao().getAllCommitInfo().toObservable()
+    override var data: Observable<List<CommitWithAuthor>> =
+        gitHubDatabase.commitWithAuthorDao().getCommitsWithAuthors().toObservable()
 
     private var getRepoDisposable: Disposable? = null
     private var getUsersDisposable: Disposable? = null
