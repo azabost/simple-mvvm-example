@@ -5,6 +5,7 @@ import com.azabost.simplemvvm.R
 import com.azabost.simplemvvm.net.ApiClient
 import com.azabost.simplemvvm.persistence.GitHubDatabase
 import com.azabost.simplemvvm.persistence.entities.CommitInfoEntity
+import com.azabost.simplemvvm.utils.ProgressHandler
 import com.azabost.simplemvvm.utils.logger
 import com.azabost.simplemvvm.utils.showErrorMessages
 import com.azabost.simplemvvm.utils.withProgress
@@ -42,6 +43,7 @@ class MainViewModel @Inject constructor(
     private var getUsersDisposable: Disposable? = null
 
     private val usersToFetch = mutableSetOf<String>()
+    private val progressHandler = ProgressHandler(progress)
 
     private val log = logger
 
@@ -51,7 +53,7 @@ class MainViewModel @Inject constructor(
         usersToFetch.clear()
 
         getRepoDisposable = gitHubClient.getRepoCommits(owner, repo)
-            .withProgress(progress)
+            .withProgress(progressHandler)
             .showErrorMessages(errors, R.string.default_error_message)
             .flatMapIterable { it }
             .subscribe({
@@ -84,11 +86,11 @@ class MainViewModel @Inject constructor(
         getUsersDisposable?.dispose()
 
         getUsersDisposable = Observable.fromIterable(usersToFetch)
-            .withProgress(progress)
-            .showErrorMessages(errors, R.string.default_error_message)
             .flatMap {
                 gitHubClient.getUser(it)
             }
+            .withProgress(progressHandler)
+            .showErrorMessages(errors, R.string.default_error_message)
             .subscribe({
                 log.info("Adding user: ${it.login}")
                 gitHubDatabase.userDao().addUser(it)
