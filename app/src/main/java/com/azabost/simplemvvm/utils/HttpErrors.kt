@@ -3,12 +3,19 @@ package com.azabost.simplemvvm.utils
 import com.azabost.simplemvvm.R
 import retrofit2.HttpException
 
-object HttpErrors {
-    val DEFAULT_HTTP_ERROR_MESSAGE = R.string.default_error_message
+typealias HttpErrorsMapper = (HttpException) -> Int?
 
-    fun httpExceptionToErrorMessage(exception: HttpException): Int {
-        // when (exception.code()) {
-        //     404 -> ...
+object HttpErrors {
+    const val DEFAULT_HTTP_ERROR_MESSAGE = R.string.default_error_message
+
+    fun httpExceptionToErrorMessage(
+        exception: HttpException,
+        httpErrorsMapper: HttpErrorsMapper? = this::defaultHttpErrorsMapper
+    ): Int {
+        return httpErrorsMapper?.invoke(exception) ?: defaultHttpErrorsMapper(exception)
+    }
+
+    private fun defaultHttpErrorsMapper(exception: HttpException): Int {
         return DEFAULT_HTTP_ERROR_MESSAGE
     }
 }

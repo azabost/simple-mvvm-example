@@ -13,46 +13,54 @@ import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
 interface MainVM {
-    val showData: Observable<Unit>
     val progress: Observable<Boolean>
     val errors: Observable<Int>
-}
-
-interface LoadingVM {
-    fun getRepo(owner: String, repo: String)
-}
-
-interface DataVM {
-    val data: RepoResponse
+    val data: Observable<RepoResponse>
+    fun getRepoData(repoPath: String)
 }
 
 class MainViewModel @Inject constructor(
-        private val gitHubClient: ApiClient
-) : ViewModel(), MainVM, LoadingVM, DataVM {
+    private val apiClient: ApiClient
+) : ViewModel(), MainVM {
+
+    private var getRepoDataDisposable: Disposable? = null
+    private val log = logger
 
     override val progress: PublishSubject<Boolean> = PublishSubject.create()
     override val errors: PublishSubject<Int> = PublishSubject.create()
-    override val showData: PublishSubject<Unit> = PublishSubject.create()
-    override var data = RepoResponse(0)
+    override val data: PublishSubject<RepoResponse> = PublishSubject.create()
 
-    private var getRepoDisposable: Disposable? = null
-    private val log = logger
+    override fun getRepoData(repoPath: String) {
+        val pathSplits = repoPath.split("/")
 
-    override fun getRepo(owner: String, repo: String) {
-        getRepoDisposable?.dispose()
+        if (pathSplits.size == 2) {
+            val owner = pathSplits.first()
+            val repo = pathSplits.last()
+            fetchRepoData(owner, repo)
+        } else {
+            errors.onNext(R.string.wrong_repo_format)
+        }
+    }
 
-        getRepoDisposable = gitHubClient.getRepo(owner, repo)
-                .withProgress(progress)
-                .showErrorMessages(errors, R.string.default_error_message)
-                .subscribe({
-                    data = it
-                    showData.onNext(Unit)
-                }, {
-                    log.error("Fetching repo failed", it)
-                })
+    private fun fetchRepoData(owner: String, repo: String) {
+        getRepoDataDisposable?.dispose()
+
+        getRepoDataDisposable = apiClient.getRepo(owner, repo)
+            .withProgress(progress)
+            .showErrorMessages(errors, R.string.default_error_message) {
+                when (it.code()) {
+                    404 -> R.string.no_such_repo
+                    else -> null
+                }
+            }
+            .subscribe({
+                data.onNext(it)
+            }, {
+                log.error("Fetching repo $owner / $repo failed", it)
+            })
     }
 
     override fun onCleared() {
-        getRepoDisposable?.dispose()
+        getRepoDataDisposable?.dispose()
     }
 }

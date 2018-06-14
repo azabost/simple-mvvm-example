@@ -11,7 +11,6 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.schedulers.TestScheduler
 import org.junit.Test
 import org.mockito.Mockito
-import pl.miensol.shouldko.shouldEqual
 
 class MainViewModelTests {
 
@@ -26,8 +25,8 @@ class MainViewModelTests {
     private val errorObserver = TestObserver.create<Int>().apply {
         vm.errors.subscribe(this)
     }
-    private val showDataObserver = TestObserver.create<Unit>().apply {
-        vm.showData.subscribe(this)
+    private val showDataObserver = TestObserver.create<RepoResponse>().apply {
+        vm.data.subscribe(this)
     }
 
     @Test
@@ -35,7 +34,7 @@ class MainViewModelTests {
         val data = RepoResponse(12345)
         mockGetRepoResponse(data)
 
-        vm.getRepo("any", "thing")
+        vm.getRepoData("any/thing")
         progressObserver.assertValue(true)
 
         testScheduler.triggerActions()
@@ -47,7 +46,7 @@ class MainViewModelTests {
         val data = RepoResponse(12345)
         mockGetRepoResponse(data)
 
-        vm.getRepo("any", "thing")
+        vm.getRepoData("any/thing")
         testScheduler.triggerActions()
 
         errorObserver.assertEmpty()
@@ -58,31 +57,52 @@ class MainViewModelTests {
         val data = RepoResponse(12345)
         mockGetRepoResponse(data)
 
-        vm.getRepo("any", "thing")
+        vm.getRepoData("any/thing")
         testScheduler.triggerActions()
 
-        showDataObserver.assertValueCount(1)
-        vm.data.shouldEqual(data)
+        showDataObserver.assertValue(data)
     }
 
     @Test
     fun getRepoErrorShouldShowHttpError() {
-        mockGetRepoResponse(error = HttpErrors.getHttpException(404))
+        mockGetRepoResponse(error = HttpErrors.getHttpException(401))
 
-        vm.getRepo("any", "thing")
+        vm.getRepoData("any/thing")
         testScheduler.triggerActions()
 
         errorObserver.assertValue(HttpErrors.DEFAULT_HTTP_ERROR_MESSAGE)
     }
 
     @Test
+    fun getRepoErrorShouldShowHttp404Error() {
+        mockGetRepoResponse(error = HttpErrors.getHttpException(404))
+
+        vm.getRepoData("any/thing")
+        testScheduler.triggerActions()
+
+        errorObserver.assertValue(R.string.no_such_repo)
+    }
+
+    @Test
     fun getRepoErrorShouldShowDefaultError() {
         mockGetRepoResponse(error = Exception("Failed"))
 
-        vm.getRepo("any", "thing")
+        vm.getRepoData("any/thing")
         testScheduler.triggerActions()
 
         errorObserver.assertValue(R.string.default_error_message)
+    }
+
+    @Test
+    fun shouldShowParsingErrorIfWrongSplits() {
+        vm.getRepoData("anything")
+        val error1 = R.string.wrong_repo_format
+
+        vm.getRepoData("any/thing/")
+        val error2 = R.string.wrong_repo_format
+
+        val errors = arrayOf(error1, error2)
+        errorObserver.assertValues(*errors)
     }
 
     private fun mockGetRepoResponse(

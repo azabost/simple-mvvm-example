@@ -6,11 +6,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 import retrofit2.HttpException
 
-fun <T> Observable<T>.observeOnMainThread(): Observable<T>
-        = observeOn(AndroidSchedulers.mainThread())
+fun <T> Observable<T>.observeOnMainThread(): Observable<T> =
+    observeOn(AndroidSchedulers.mainThread())
 
 fun <T> Observable<T>.withProgress(
-        progressSubject: PublishSubject<Boolean>): Observable<T> {
+    progressSubject: PublishSubject<Boolean>
+): Observable<T> {
 
     return compose {
         it.doOnSubscribe {
@@ -22,13 +23,15 @@ fun <T> Observable<T>.withProgress(
 }
 
 fun <T> Observable<T>.showErrorMessages(
-        errorsSubject: PublishSubject<Int>,
-        @StringRes default: Int): Observable<T> {
+    errorsSubject: PublishSubject<Int>,
+    @StringRes default: Int,
+    httpErrorsMapper: HttpErrorsMapper? = null
+): Observable<T> {
 
     return compose {
         it.doOnError {
             if (it is HttpException) {
-                errorsSubject.onNext(HttpErrors.httpExceptionToErrorMessage(it))
+                errorsSubject.onNext(HttpErrors.httpExceptionToErrorMessage(it, httpErrorsMapper))
             } else {
                 errorsSubject.onNext(default)
             }

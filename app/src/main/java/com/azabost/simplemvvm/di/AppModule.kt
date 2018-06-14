@@ -4,7 +4,6 @@ import com.azabost.simplemvvm.net.NetworkModule
 import dagger.Module
 
 @Module(includes = [
-    ViewModelModule::class,
     NetworkModule::class
 ])
 class AppModule {

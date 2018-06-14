@@ -1,13 +1,14 @@
 package com.azabost.simplemvvm.ui.main
 
-import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import com.azabost.simplemvvm.R
+import com.azabost.simplemvvm.di.ViewModelFactory
 import com.azabost.simplemvvm.ui.BaseActivity
+import com.azabost.simplemvvm.ui.repo.RepoActivity
 import com.azabost.simplemvvm.utils.hide
-import com.azabost.simplemvvm.utils.logger
 import com.azabost.simplemvvm.utils.observeOnMainThread
 import com.azabost.simplemvvm.utils.show
 import com.trello.rxlifecycle2.android.lifecycle.kotlin.bindToLifecycle
@@ -17,66 +18,33 @@ import javax.inject.Inject
 class MainActivity : BaseActivity() {
 
     @Inject
-    lateinit var vmFactory: ViewModelProvider.Factory
+    lateinit var vmFactory: ViewModelFactory<MainViewModel>
 
-    private lateinit var vm: MainVM
-
-    private val log = logger
+    lateinit var vm: MainVM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        vm = ViewModelProviders.of(this, vmFactory).get(MainViewModel::class.java)
         setContentView(R.layout.activity_main)
 
-        showLoadingFragment()
+        vm = ViewModelProviders.of(this, vmFactory)[MainViewModel::class.java]
 
-        vm.progress.bindToLifecycle(this).observeOnMainThread().subscribe({
-            if (it) {
-                showProgress()
-            } else {
-                hideProgress()
-            }
-        }, {
-            log.error("Error observing progress", it)
-        })
-
-        vm.showData.bindToLifecycle(this).observeOnMainThread().subscribe({
-            showDataFragment()
-        }, {
-            log.error("Error observing repo response", it)
-        })
-
-        vm.errors.bindToLifecycle(this).observeOnMainThread().subscribe({
-            showError(it)
-        }, {
-            log.error("Error observing error messages", it)
-        })
-    }
-
-    private fun showError(errorRes: Int) {
-        Toast.makeText(this, errorRes, Toast.LENGTH_LONG).show()
-    }
-
-    private fun showLoadingFragment() {
-        if (!supportFragmentManager.popBackStackImmediate()) {
-            supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment, LoadingFragment())
-                    .commit()
+        vm.progress.bindToLifecycle(this).observeOnMainThread().subscribe {
+            if (it) progress.show() else progress.hide()
         }
-    }
 
-    private fun showDataFragment() {
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment, DataFragment())
-                .addToBackStack(null)
-                .commit()
-    }
+        vm.errors.bindToLifecycle(this).observeOnMainThread().subscribe {
+            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+        }
 
-    private fun showProgress() {
-        progress.show()
-    }
+        vm.data.bindToLifecycle(this).observeOnMainThread().subscribe {
+            val intent = Intent(this, RepoActivity::class.java).apply {
+                putExtra(RepoActivity.REPO_RESPONSE_EXTRA, it)
+            }
+            startActivity(intent)
+        }
 
-    private fun hideProgress() {
-        progress.hide()
+        getRepoDataButton.setOnClickListener {
+            vm.getRepoData(repoNameInput.text.toString())
+        }
     }
 }

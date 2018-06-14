@@ -1,3 +1,5 @@
 package com.azabost.simplemvvm.net.response
 
-data class RepoResponse(val id: Long)
+import java.io.Serializable
+
+data class RepoResponse(val id: Long) : Serializable

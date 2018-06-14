@@ -3,18 +3,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical"
     tools:context="com.azabost.simplemvvm.ui.main.MainActivity">
 
-    <FrameLayout
-        android:id="@+id/fragment"
+    <EditText
+        android:id="@+id/repoNameInput"
+        android:text="azabost/simple-mvvm-example"
+        android:hint="@string/repo_format"
+        android:textAlignment="center"
+        android:layout_margin="16dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/getRepoDataButton"
+        android:text="@string/get_data"
+        android:layout_below="@+id/repoNameInput"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <include
         android:id="@+id/progress"
         layout="@layout/progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
         android:visibility="gone" />
 
 </RelativeLayout>

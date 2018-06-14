@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">SimpleMvvm</string>
     <string name="default_error_message">Your favorite meaningless error message</string>
+    <string name="wrong_repo_format">Repository name should be formatted like this: &lt;owner&gt;/&lt;repo&gt;</string>
+    <string name="repo_format">&lt;owner&gt;/&lt;repo&gt;</string>
+    <string name="get_data">Get data</string>
+    <string name="no_such_repo">There is no such repository. Check the provided name and try again.</string>
 </resources>
