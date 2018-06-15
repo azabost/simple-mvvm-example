@@ -1,6 +1,5 @@
 package com.azabost.simplemvvm.ui.main
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -26,7 +25,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        vm = ViewModelProviders.of(this, vmFactory)[MainViewModel::class.java]
+        vm = vmFactory.get()
 
         vm.progress.bindToLifecycle(this).observeOnMainThread().subscribe {
             if (it) progress.show() else progress.hide()

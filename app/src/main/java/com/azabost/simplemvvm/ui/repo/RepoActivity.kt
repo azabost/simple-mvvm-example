@@ -1,6 +1,5 @@
 package com.azabost.simplemvvm.ui.repo
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import com.azabost.simplemvvm.R
 import com.azabost.simplemvvm.di.ViewModelFactory
@@ -19,7 +18,7 @@ class RepoActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_repo)
 
-        vm = ViewModelProviders.of(this, vmFactory)[RepoViewModel::class.java]
+        vm = vmFactory.get()
 
         repoData.text = vm.repoResponse.id.toString()
     }
