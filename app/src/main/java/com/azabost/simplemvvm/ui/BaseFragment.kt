@@ -23,8 +23,8 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
 
     inline fun <reified T : ViewModel> ViewModelFactory<T>.get(): T =
-        ViewModelProviders.of(this@BaseFragment, this).get(T::class.java)
+        ViewModelProviders.of(this@BaseFragment, this)[T::class.java]
 
     inline fun <reified T : ViewModel> ViewModelFactory<T>.getForActivity(): T =
-        ViewModelProviders.of(activity!!, this).get(T::class.java)
+        ViewModelProviders.of(activity!!, this)[T::class.java]
 }
