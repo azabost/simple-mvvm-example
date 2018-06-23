@@ -8,9 +8,7 @@ import com.azabost.simplemvvm.di.ViewModelFactory
 import com.azabost.simplemvvm.ui.BaseActivity
 import com.azabost.simplemvvm.ui.repo.RepoActivity
 import com.azabost.simplemvvm.utils.hide
-import com.azabost.simplemvvm.utils.observeOnMainThread
 import com.azabost.simplemvvm.utils.show
-import com.trello.rxlifecycle2.android.lifecycle.kotlin.bindToLifecycle
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
@@ -27,15 +25,15 @@ class MainActivity : BaseActivity() {
 
         vm = vmFactory.get()
 
-        vm.progress.bindToLifecycle(this).observeOnMainThread().subscribe {
+        vm.progress.observeOnMainThreadAndAutoDispose().subscribe {
             if (it) progress.show() else progress.hide()
         }
 
-        vm.errors.bindToLifecycle(this).observeOnMainThread().subscribe {
+        vm.errors.observeOnMainThreadAndAutoDispose().subscribe {
             Toast.makeText(this, it, Toast.LENGTH_LONG).show()
         }
 
-        vm.data.bindToLifecycle(this).observeOnMainThread().subscribe {
+        vm.data.observeOnMainThreadAndAutoDispose().subscribe {
             val intent = Intent(this, RepoActivity::class.java).apply {
                 putExtra(RepoActivity.REPO_RESPONSE_EXTRA, it)
             }

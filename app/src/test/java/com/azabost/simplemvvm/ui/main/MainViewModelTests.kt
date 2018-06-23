@@ -5,17 +5,19 @@ import com.azabost.simplemvvm.net.ApiClient
 import com.azabost.simplemvvm.net.GitHubService
 import com.azabost.simplemvvm.net.response.RepoResponse
 import com.azabost.simplemvvm.utils.HttpErrors
+import com.azabost.simplemvvm.utils.MockitoUtils
 import com.azabost.simplemvvm.utils.getHttpException
-import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.schedulers.TestScheduler
 import org.junit.Test
 import org.mockito.Mockito
+import pl.brightinventions.myparkinson.net.connectivity.FakeConnectivity
 
 class MainViewModelTests {
 
-    private val gitHubClient = Mockito.mock(GitHubService::class.java)
-    private val apiClient = ApiClient(gitHubClient)
+    private val gitHubService = Mockito.mock(GitHubService::class.java)
+    private val connectivity = FakeConnectivity()
+    private val apiClient = ApiClient(gitHubService, connectivity)
     private val testScheduler = TestScheduler()
     private val vm = MainViewModel(apiClient)
 
@@ -105,17 +107,24 @@ class MainViewModelTests {
         errorObserver.assertValues(*errors)
     }
 
+    @Test
+    fun shouldShowNoInternetConnectionError() {
+        connectivity.isConnected = false
+
+        vm.getRepoData("any/thing")
+
+        errorObserver.assertValue(R.string.error_no_internet_connection)
+    }
+
     private fun mockGetRepoResponse(
         response: RepoResponse? = null,
         error: Throwable? = null
     ) {
-        val r = if (response != null) Observable.just(response) else Observable.error(error)
-        Mockito.`when`(
-            gitHubClient.getRepo(
-                Mockito.anyString(),
-                Mockito.anyString()
-            )
-        ).thenReturn(r.subscribeOn(testScheduler).observeOn(testScheduler))
+        MockitoUtils.mockApiResponse(
+            Mockito.`when`(gitHubService.getRepo(Mockito.anyString(), Mockito.anyString())),
+            testScheduler,
+            response,
+            error
+        )
     }
-
 }

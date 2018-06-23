@@ -5,11 +5,15 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.azabost.simplemvvm.di.ViewModelFactory
+import com.azabost.simplemvvm.utils.HasLifecycleScopeProvider
+import com.uber.autodispose.LifecycleScopeProvider
+import com.uber.autodispose.android.lifecycle.scope
 import dagger.android.AndroidInjection
 
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity(), HasLifecycleScopeProvider {
 
+    override val scopeProvider: LifecycleScopeProvider<*> by lazy { scope() }
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)

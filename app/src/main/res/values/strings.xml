@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SimpleMvvm</string>
     <string name="default_error_message">Your favorite meaningless error message</string>
+    <string name="error_no_internet_connection">No internet connection</string>
     <string name="wrong_repo_format">Repository name should be formatted like this: &lt;owner&gt;/&lt;repo&gt;</string>
     <string name="repo_format">&lt;owner&gt;/&lt;repo&gt;</string>
     <string name="get_data">Get data</string>

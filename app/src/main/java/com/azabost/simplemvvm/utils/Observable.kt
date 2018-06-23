@@ -1,6 +1,7 @@
 package com.azabost.simplemvvm.utils
 
 import android.support.annotation.StringRes
+import com.azabost.simplemvvm.net.connectivity.ConnectivityException
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
@@ -32,6 +33,8 @@ fun <T> Observable<T>.showErrorMessages(
         it.doOnError {
             if (it is HttpException) {
                 errorsSubject.onNext(HttpErrors.httpExceptionToErrorMessage(it, httpErrorsMapper))
+            } else if (it is ConnectivityException) {
+                errorsSubject.onNext(it.reason)
             } else {
                 errorsSubject.onNext(default)
             }

@@ -40,13 +40,14 @@ dependencies {
     final SUPPORT_VERSION = "27.1.1"
     implementation "com.android.support:appcompat-v7:$SUPPORT_VERSION"
     implementation "com.android.support:design:$SUPPORT_VERSION"
-    implementation 'com.android.support.constraint:constraint-layout:1.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
     // Reactive
     final RXJAVA_VERSION = "2.1.12"
-    final RXLIFECYCLE_VERSION = "2.2.1"
+    final AUTODISPOSE_VERSION = "0.8.0"
     implementation "io.reactivex.rxjava2:rxjava:$RXJAVA_VERSION"
-    implementation "com.trello.rxlifecycle2:rxlifecycle-android-lifecycle-kotlin:$RXLIFECYCLE_VERSION"
+    implementation "com.uber.autodispose:autodispose-kotlin:$AUTODISPOSE_VERSION"
+    implementation "com.uber.autodispose:autodispose-android-archcomponents-kotlin:$AUTODISPOSE_VERSION"
 
     // Dagger
     final DAGGER_VERSION = "2.16"
@@ -70,9 +71,6 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
     implementation "com.squareup.retrofit2:converter-gson:$RETROFIT_VERSION"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$RETROFIT_VERSION"
-    
-    implementation "com.android.support:appcompat-v7:$SUPPORT_VERSION"
-    implementation 'com.android.support.constraint:constraint-layout:1.1.1'
 
     testImplementation 'org.mockito:mockito-core:2.18.0'
     testImplementation 'junit:junit:4.12'
